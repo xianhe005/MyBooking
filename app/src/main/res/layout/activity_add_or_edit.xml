@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/popup_theme"
+        app:titleTextColor="@color/text_white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:gravity="center|end"
+            android:text="@string/in_out"
+            android:textSize="18sp" />
+
+        <RadioGroup
+            android:id="@+id/rg"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="@string/in"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/rb2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:text="@string/out"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+        </RadioGroup>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:gravity="center|end"
+            android:text="@string/use"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_use"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="10dp"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="@string/use_hint"
+            android:inputType="text"
+            android:textSize="18sp"
+            tools:ignore="Autofill" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:gravity="center|end"
+            android:text="@string/money"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/et_money"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="10dp"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="@string/money_hint"
+            android:inputType="numberSigned"
+            android:textSize="18sp"
+            tools:ignore="Autofill" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="6dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="42dp"
+            android:gravity="center|end"
+            android:text="@string/time"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginStart="10dp"
+            android:gravity="center_vertical"
+            android:hint="@string/select_time"
+            android:textSize="18sp"
+            tools:ignore="Autofill" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/btn_selector"
+        android:text="@string/save"
+        android:textColor="@color/text_white"
+        android:textSize="20sp" />
+
+</LinearLayout>

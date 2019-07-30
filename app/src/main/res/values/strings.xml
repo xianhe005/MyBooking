@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">记账本</string>
+    <string name="booking">@string/app_name</string>
+    <string name="add">添加</string>
+    <string name="add_record">添加记录</string>
+    <string name="use">用途:</string>
+    <string name="use_hint">请输入用途</string>
+    <string name="time">时间:</string>
+    <string name="select_time">点击选择时间</string>
+    <string name="money">金额(元):</string>
+    <string name="in_out">收/支</string>
+    <string name="in">收入</string>
+    <string name="out">支出</string>
+    <string name="save">保存</string>
+    <string name="back">返回</string>
+    <string name="money_hint">请输入金额</string>
+    <string name="out2Excel">导出</string>
+</resources>
