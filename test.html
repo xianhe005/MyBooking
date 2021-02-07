@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>内容详情111111111111</title>
+  <link rel="stylesheet" href="https://tfy-assets.hxkjmedia.com/styles/reset.css">
+  <link rel="stylesheet" href="https://tfy-assets.hxkjmedia.com/styles/normalize.css">
+  <link rel="stylesheet" href="https://tfy-assets.hxkjmedia.com/styles/content-detail.css">
+  <link rel="stylesheet" href="https://tfy-assets.hxkjmedia.com/styles/content-detail_yh.css">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://tfy-assets.hxkjmedia.com/styles/vant.css">
+  <script src="https://tfy-assets.hxkjmedia.com/js/vue.js"></script>
+  <script src="https://tfy-assets.hxkjmedia.com/js/axios.js"></script>
+  <script src="https://tfy-assets.hxkjmedia.com/js/qs.js"></script>
+  <script src="https://tfy-assets.hxkjmedia.com/js/auto-size-rem.js"></script>
+   <script src="https://tfy-assets.hxkjmedia.com/js/vant.min.js"></script>
+  <script src="https://tfy-assets.hxkjmedia.com/js/ip.js"></script>
+  <link data-vue-meta="true" rel="apple-touch-icon" href="http://i1.hdslb.com/bfs/archive/6e9f0ad7c0743339772eb0cf5aa610cc8011218d.jpg@57w_57h_1c.png">
+  
+  <script src="https://tfy-assets.hxkjmedia.com/js/babel.min.js"></script>
+
+</head>
+
+<body>
+  <!-- 视图 -->
+  <div id="app" v-cloak>
+    <van-skeleton title :row="10" :loading="loading">
+    </van-skeleton>
+    <van-skeleton avatar :loading="loading" avatar-shape="square">
+    </van-skeleton>
+    <van-skeleton :row="5" :loading="loading">
+    </van-skeleton>
+    <van-skeleton avatar :loading="loading" avatar-shape="square">
+    </van-skeleton>
+    <van-skeleton avatar :loading="loading" avatar-shape="square">
+    </van-skeleton>
+
+    <div v-if='!isBlank'>
+      <div class="articleBox">
+        <div class="topBox_yh">
+          <div class="title_yh">
+            <h1>{{contentDetail.title}}</h1>
+            <h2>{{contentDetail.nickName}}</h2>
+          </div>
+
+          <div class="coverImg_yh" v-if='!showVideo'>
+            <img style="width:100%" :src="contentDetail.cover" alt="">
+          </div>
+
+          <div class="" v-if='!showVideo'>
+            <div class="bar">
+              <div class="progressbar" @click="playMusic" ref="runfatbar">
+                <div class="greenbar" ref="runbar">
+                  <span class="yuan" draggable="true"></span>
+                </div>
+              </div>
+            </div>
+            <div class="time-text">{{cTime}}</div>
+            <div class="right-time time-text">{{dTime}}</div>
+            <audio ref='player' :src="contentDetail.audio"></audio>
+          </div>
+
+          <div style="text-align:center;padding: 1rem 0 2rem 0;" v-else>
+            <video :poster='contentDetail.cover' width="100%" height="210" :src="contentDetail.video" controls></video>
+          </div>
+
+          <div @click="audioState" class="controlBox_yh" v-if='!showVideo'>
+            <img height="60px" src="https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/audio.png" alt="">
+            <img class="pause" v-show='play' src="https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/pause.png"
+              alt="">
+          </div>
+
+        </div>
+
+
+        <div class="content" v-html='contentDetail.content'>
+        </div>
+        <div class="likeBox1">
+          <div class="inner" @click='recognitionDevice'>
+            <span :class="isLike===0?'icon2':'icon1'"></span>
+          </div>
+        </div>
+
+        <div class="likeBox1">{{likeNumber}}</div>
+      </div>
+      <div class="likeWrap">
+        <div class="likeBox">
+          <div class="guess" v-if='likeData'>
+            — 猜你喜欢 —
+          </div>
+          <ul v-for='(item,index) in likeData' :key='index' class="guessBox" @click="clickEvent(item)">
+            <li class="imgBox">
+              <img class="cover_yh" :src="item.cover" alt="" class="cover">
+            </li>
+            <li class="textBox">
+              <p>{{item.title}}</p>
+              <p @click.stop='listPlayEvent(index,item)' class="listener">
+                <audio style="display: none;" :src="item.audio" controls ref='likeAudio'></audio>
+                <img width="10" src="https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/horn.png" alt="">
+                <span style="font-size: 1rem;">听文化</span>
+              </p>
+              <div class="bottomBox_yh">
+
+                <div class="nickName">
+                  <div class="addr">{{item.nickName}}</div>
+                </div>
+
+                <div class="readBox">
+                  <van-icon name="eye-o"></van-icon>
+                  {{item.readNumber}}
+                </div>
+
+
+                <div class="distance" style="width: 40%;" v-if='item.distance'>
+                  距你{{item.distance>1000?(item.distance/1000).toFixed(2):item.distance}}{{item.distance>1000?'km':'m'}}
+                </div>
+
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center;margin-top: 60%;" v-if='isBlank && !loading'>
+      <img width="120px" src="https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/contentBlank.png" alt="">
+      <p style="font-size: 16px;color: #5D5D5D;margin-top: 10px;">数据走丢了</p>
+    </div>
+  </div>
+
+  <script type="text/babel">
+    new Vue({
+      el: '#app',
+      data: {
+        IP: '/tianfu-culture-api',
+        contentDetail: {},
+        likeData: [],
+        commentNum: 1999,
+        commentList: [],
+        id: null,
+        msg: "",
+        playFlag: false,
+        latitude: null,
+        longitude: null,
+        earImageUrl: 'https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/ear.png',
+        playNum: null,
+        hearderContent: '',
+        loading: true,
+        likeNumber: 0,
+        isLike: 0,
+        moblie: '',
+        userDeviceId: '',
+        cTime: '00:00', // 已播放时间
+        dTime: '00:00', // 总播放时间
+        play: false, // 播放暂停按钮
+        showVideo: false, //判断页面是否是视频内容,
+
+        isBlank: false,
+      },
+      created() {
+        this.id = Number((window.location.search.substr(1).split('=')[1]).split('&')[0]);
+        this.getContentDetail();
+        this.getList();
+      },
+      mounted() {
+        let that = this
+
+        document.addEventListener("WeixinJSBridgeReady", function () {
+          const music = that.$refs.player // 音频所在对象
+          const musicBar = that.$refs.runbar // 颜色进度条所在对象
+          const musicWidth = that.$refs.runfatbar.offsetWidth // 底部进度条总宽
+          music.play()
+          music.pause()
+          music.addEventListener("loadedmetadata", function () { //监听audio是否加载完毕，如果加载完毕，则读取audio播放时间
+            const musicTime = music.duration
+            const branch = Math.floor(musicTime / 60) // 计算音频分钟
+            const second = Math.ceil(musicTime % 60) // 计算音频秒
+            if (branch < 10 && second < 10) { // 四种情况判断音频总时间
+              that.dTime = `0${branch}:0${second}`
+            } else if (branch < 10) {
+              that.dTime = `0${branch}:${second}`
+            } else if (second < 10) {
+              that.dTime = `${branch}:0${second}`
+            } else {
+              that.dTime = `${branch}:${second}`
+            }
+          });
+        }, false);
+
+
+        const music = that.$refs.player // 音频所在对象
+        const musicBar = that.$refs.runbar // 颜色进度条所在对象
+        const musicWidth = that.$refs.runfatbar.offsetWidth // 底部进度条总宽
+        music.addEventListener("loadedmetadata", function () { //监听audio是否加载完毕，如果加载完毕，则读取audio播放时间
+          const musicTime = music.duration
+          const branch = Math.floor(musicTime / 60) // 计算音频分钟
+          const second = Math.ceil(musicTime % 60) // 计算音频秒
+          if (branch < 10 && second < 10) { // 四种情况判断音频总时间
+            that.dTime = `0${branch}:0${second}`
+          } else if (branch < 10) {
+            that.dTime = `0${branch}:${second}`
+          } else if (second < 10) {
+            that.dTime = `${branch}:0${second}`
+          } else {
+            that.dTime = `${branch}:${second}`
+          }
+        });
+
+        // 获得音频正在播放时的处理
+        music.addEventListener('timeupdate', () => {
+          const musicTime = music.duration // 获得音频时长
+          const stopTime = music.currentTime // 获得已播放的音频时长
+          musicBar.style.width = `${(stopTime / musicTime) * 100}%` // 计算进度条所在比例宽度
+          const branch = Math.floor(stopTime / 60) // 计算已播放的音频分钟
+          const second = Math.floor(stopTime % 60) // 计算已播放的音频秒
+          if (branch < 10 && second < 10) { // 四种情况判断显示音频以播放时间
+            this.cTime = `0${branch}:0${second}`
+          } else if (branch < 10) {
+            this.cTime = `0${branch}:${second}`
+          } else if (second < 10) {
+            this.cTime = `${branch}:0${second}`
+          } else {
+            this.cTime = `${branch}:${second}`
+          }
+
+        })
+        // 监听颜色进度条是否触摸拖动
+        musicBar.addEventListener('touchmove', (event) => {
+          const events = event.targetTouches[0].pageX // 获得触摸拖动的距离
+          musicBar.style.width = `${(events / musicWidth) * 100}%` // 计算进度条所在比例宽度
+          music.pause() // 触摸拖动时停止播放
+        })
+
+        // 监听颜色进度条是否触摸拖动结束
+        musicBar.addEventListener('touchend', () => {
+          const touwidth = (musicBar.offsetWidth / musicWidth) // 计算进度条所在比例
+          music.currentTime = music.duration * touwidth // 通过所在比例赋值给音频应在的播放时间
+          music.play() // 根据播放时间开始播放
+          this.play = true // 更改播放暂停按钮为播放
+        })
+
+      },
+      methods: {
+        playMusic(e) {
+          this.stopAll()
+          const music = this.$refs.player // 音频所在对象
+          const barWidth = e.pageX / this.$refs.runfatbar.offsetWidth // 计算点击位置相对父元素总宽的比例
+          this.$refs.runbar.style.width = `${barWidth * 100}%` // 进度条应所在的比例总宽
+          music.currentTime = music.duration * barWidth // 计算点击时应播放所在的时间
+          music.play() // 播放音频
+          this.play = true // 更改播放暂停按钮为播放
+        },
+
+        // 点击播放暂停按钮事件
+        audioState() {
+          this.stopAll()
+          this.play = !this.play // 更改播放暂停按钮状态
+          const music = this.$refs.player // 音频所在对象
+          if (this.play) {
+            music.play() // 播放音乐
+          } else {
+            music.pause() // 暂停音乐
+          }
+        },
+        recognitionDevice() {
+          // window.location.href='http://tfy.hxkjmedia.com/share/share.html';
+          // var 
+          window.location.href='./share.html';
+
+        },
+        async getList() {
+          let params = {
+            latitude: this.latitude,
+            longitude: this.longitude,
+            shareId: this.id
+          }
+          let res = await axios.post(
+            `${overallIp}/api/content/queryRecommendList`,
+            Qs
+            .stringify({
+              'request': JSON.stringify(params)
+            }), {
+              headers: {
+                'authorization': this.hearderContent
+              }
+            });
+          res = res.data;
+          if (res.code == '00000000') {
+            // console.log(res.response);
+            this.likeData = res.response;
+            this.likeData.forEach(ele => {
+              ele.distance = parseFloat(ele.distance);
+            })
+            this.likeData.flag = false;
+            this.likeData.earImageUrl = 'https://tfwhy01.oss-cn-chengdu.aliyuncs.com/static/images/分组 83x.png';
+          }
+        },
+        async getContentDetail() {
+          let params = {
+            shareId: this.id
+          }
+          let res = await axios.post(
+            `${overallIp}/api/content/queryDetail`, Qs
+            .stringify({
+              'request': JSON.stringify(params)
+            }), {
+              headers: {
+                'authorization': this.hearderContent
+              }
+            });
+          res = res.data;
+          if (res.response == null) {
+            this.loading = false;
+            this.isBlank = true
+            return
+          } else if (res.code == '00000000') {
+            this.contentDetail = res.response;
+            this.loading = false;
+            this.isLike = res.response.isLike;
+            this.likeNumber = res.response.likeNumber + res.response.shamLikeNumber;
+            if (res.response.type == 3) {
+              this.showVideo = true
+            } else {
+              this.showVideo = false
+            }
+          }
+        },
+        async addViewNum(item) {
+          let params = {
+            shareId: item.shareId
+          }
+          await axios.post(
+            `${overallIp}/api/common/read`,
+            Qs
+            .stringify({
+              'request': JSON.stringify(params)
+            }), {
+              headers: {
+                'authorization': this.hearderContent
+              }
+            }
+          );
+        },
+        clickEvent(item) {
+          let that = this
+          that.timer = setInterval(() => {
+            const music = that.$refs.player // 音频所在对象
+            const musicTime = music.duration // 获得音频时长
+            if (musicTime) {
+              const branch = Math.floor(musicTime / 60) // 计算音频分钟
+              const second = Math.ceil(musicTime % 60) // 计算音频秒
+              if (branch < 10 && second < 10) { // 四种情况判断音频总时间
+                that.dTime = `0${branch}:0${second}`
+              } else if (branch < 10) {
+                that.dTime = `0${branch}:${second}`
+              } else if (second < 10) {
+                that.dTime = `${branch}:0${second}`
+              } else {
+                that.dTime = `${branch}:${second}`
+              }
+              clearInterval(that.timer)
+            }
+          }, 50);
+
+          that.addViewNum(item)
+          that.id = item.shareId;
+          that.getContentDetail();
+          that.getList();
+          that.play = false
+          that.stopAll()
+          that.$refs.player.pause()
+          that.$refs.runbar.style.width = '0%'
+          that.cTime = '00:00' // 已播放时间
+          that.current = 0;
+          if (document.body.scrollTop) {
+            document.body.scrollTop = 0
+          } else {
+            document.documentElement.scrollTop = 0
+          }
+          if (that.$refs.topBox) { // 滚动元素跳转到顶部
+            that.$refs.topBox.scrollTop = 0;
+          }
+          window.webkit.messageHandlers.sendAction.postMessage({
+            title: item.title,
+            shareId: item.shareId
+          });
+        },
+        listPlayEvent(index, item) {
+          // 停止banner音频
+          this.$refs.player.pause()
+          this.play = false
+          // 停止所有音频
+          this.playFlag = false;
+          if (item.flag && this.playNum !== index) {
+            // 停止所有
+            this.$refs.likeAudio.forEach(ele => {
+              ele.pause();
+              ele.currentTime = 0;
+            });
+            item.flag = false;
+            this.playNum = index;
+            this.$refs.likeAudio[index].play();
+          } else if (item.flag && this.playNum === index) {
+            this.$refs.likeAudio[index].pause();
+            this.playNum = null;
+          } else {
+            item.flag = true;
+            this.playNum = index;
+            // 停止所有
+            this.$refs.likeAudio.forEach(ele => {
+              ele.pause();
+              ele.currentTime = 0;
+            });
+            this.$refs.likeAudio[index].play();
+          }
+        },
+        pause() {
+          this.playFlag = false;
+        },
+        stopAll() {
+          this.playNum = null;
+          // 停止所有
+          this.$refs.likeAudio.forEach(ele => {
+            ele.pause();
+            ele.currentTime = 0;
+          });
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
